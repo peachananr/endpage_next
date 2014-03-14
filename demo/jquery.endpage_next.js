@@ -16,7 +16,6 @@
 !function($){
   
   var defaults = {
-    nextUrl: "#",
     speed: 8,
     waitTime: 3000,
     position: "bottom",
@@ -105,13 +104,13 @@
                 });
               }
             } else {
-              if ((pos + $(window).height()) - (container.height() + 1) == 0) bottom = 0
+
+              if ((pos + $(window).height()) - container.height() == 0) bottom = 0
               $(".epn-nextpage:not(.epn-top)").css({
                 "bottom": bottom
               });
             }
           } else {
-
            
             if (loading == false) {
 
@@ -133,6 +132,7 @@
                 }
 
               } else {
+
                 $(".epn-nextpage.epn-top").css({
                   "top": top
                 })

@@ -1,5 +1,5 @@
 /* ===========================================================
- * jquery-endpage_next.js v1.0
+ * jquery-endpage_next.js v1.0.1
  * ===========================================================
  * Copyright 2013 Pete Rojwongsuriya.
  * http://www.thepetedesign.com
@@ -16,13 +16,14 @@
 !function($){
   
   var defaults = {
+    nextUrl: "#",
     speed: 8,
     waitTime: 3000,
     position: "bottom",
     type: "overlay",
-    topHTML: "Pull to Refresh",
+    topHTML: "Go to Previous Page",
     topUrl: "#",
-    bottomHTML: "Hold to Next Page",
+    bottomHTML: "Go to Next Page",
     bottomUrl: "#"
   };
 
@@ -42,20 +43,38 @@
     $("<div class='epn-nextpage'>" + settings.bottomHTML +"</div>").appendTo(container.find(".epn-wrapper"));
 
     if (settings.position == "both") $("<div class='epn-nextpage epn-top'>" + settings.topHTML +"</div>").appendTo(container.find(".epn-wrapper"))
-    var elH = $(".epn-nextpage").outerHeight(true);
+    var elHtop = $(".epn-nextpage.epn-top").outerHeight(true);
+    var elHbottom = $(".epn-nextpage:not(.epn-top)").outerHeight(true);
+    
+    $(".epn-nextpage:not(.epn-top)").css({
+      "bottom": "-1000%"
+    });
+    
+    $(".epn-nextpage.epn-top").css({
+      "position": "fixed",
+      "top": (elHtop * -1)
+    });
+    
+    $(".epn-nextpage.epn-top").click(function() {
+      window.location.href = settings.topUrl;
+    });
+    
+    $(".epn-nextpage:not(.epn-top)").click(function() {
+      window.location.href = settings.bottomUrl;
+    });
     
     if (settings.position == "top") {
       $(".epn-nextpage").addClass("epn-top")
       $(".epn-nextpage").html(settings.topHTML);
     }
     
-    $(document).scroll(function(event){
-      var pos = container.scrollTop(),
-          diff_bottom = (container.scrollTop() + $(window).height()) - container.height(),
-          bottom = (elH * -1) + (diff_bottom * (settings.speed)),
-          diff_top = (container.scrollTop() * -1),
-          top = (elH * -1) + (diff_top * (settings.speed));
-          
+    $(window).on('scroll touchmove', function(event) {
+      
+      var pos = window.pageYOffset,
+          diff_bottom = (pos + $(window).height()) - container.height(),
+          bottom = (elHbottom * -1) + (diff_bottom * (settings.speed)),
+          diff_top = (pos * -1),
+          top = (elHtop * -1) + (diff_top * (settings.speed));
       if (bottom >= 0) bottom = 0;
       if (top >= 0) top = 0;
       
@@ -63,41 +82,45 @@
         if(pos > posWas){
           
           // When at the bottom
-          if((container.scrollTop() + $(window).height() >= container.height())) {
+          if((pos + $(window).height() >= container.height())) {
 
             if (settings.type == "push") {
               if (settings.position == "bottom" || settings.position == "both") {
                 var body_push = (diff_bottom * settings.speed) * -1;
-                if (body_push <= (elH * -1)) body_push = elH * -1;
+                if (body_push <= (elHbottom * -1)) body_push = elHbottom * -1;
                 
                 
                 
                 $(".epn-nextpage:not(.epn-top)").css({
-                  "bottom": (elH * -1)
+                  "bottom": (elHbottom * -1)
                 });
                 container.find(".epn-wrapper").css({
                   "-webkit-transform": "translate3d(0, " + body_push  + "px, 0)", 
-                  "-moz-transform": "translate3d(0, " + body_push * -1 + "px, 0)", 
-                  "-o-transform": "translate3d(0, " + body_push * -1 + "px, 0)", 
-                  "transform": "translate3d(0, " + body_push * -1 + "px, 0)"
+                  "-moz-transform": "translate3d(0, " + body_push  + "px, 0)", 
+                  "-o-transform": "translate3d(0, " + body_push  + "px, 0)", 
+                  "transform": "translate3d(0, " + body_push + "px, 0)"
                 });
               }
             } else {
+              if ((pos + $(window).height()) - (container.height() + 1) == 0) bottom = 0
+              console.log(container.height())
               $(".epn-nextpage:not(.epn-top)").css({
                 "bottom": bottom
               });
             }
           } else {
-            
+
+           
             if (loading == false) {
 
               if (settings.type == "push") {
                 if (settings.position == "top" || settings.position == "both") {
                   var body_push2 = (diff_top * settings.speed);
-                   if (body_push2 >= elH) body_push2 = elH;
+                   if (body_push2 >= elHtop) body_push2 = elHtop;
                   if (body_push2 <= 0) body_push2 = 0;
+                  
                   $(".epn-nextpage.epn-top").css({
-                    "top": (elH * -1)
+                    "top": (elHtop * -1)
                   })
                   container.find(".epn-wrapper").css({
                     "-webkit-transform": "translate3d(0, " + body_push2  + "px, 0)", 
@@ -123,19 +146,19 @@
           
          // When at the top
          
-         if((container.scrollTop() + $(window).height() < container.height())) {
+         if((pos + $(window).height() < container.height())) {
            
-           if(container.scrollTop() <= 0) {
+           if(pos <= 0) {
              
              if (settings.type == "push") {
                if (settings.position == "top" || settings.position == "both") {
                  var body_push = (diff_top * settings.speed);
-                  if (body_push >= elH) body_push = elH;
+                  if (body_push >= elHtop) body_push = elHtop;
 
-
+                  if (pos == 0) body_push = elHtop
 
                   $(".epn-nextpage.epn-top").addClass("epn-top").css({
-                    "top": (elH * -1)
+                    "top": (elHtop * -1)
                   });
 
 
@@ -148,22 +171,32 @@
                }
                
              } else {
+              if (pos == 0) top = 0
+              
                $(".epn-nextpage.epn-top").addClass("epn-top").css({
                  "top": top
                });
              }
          
+           } else {
+             if (pos + $(window).height() <= container.height()) {
+               bottom = (elHbottom * -1)
+               $(".epn-nextpage:not(.epn-top)").css({
+                 "bottom": bottom
+               });
+             }
            }
          } else {
+           
            if (loading == false) {
 
              if (settings.type == "push") {
                if (settings.position == "bottom" || settings.position == "both") {
                  var body_push2 = (diff_bottom * settings.speed) * -1;
-                 if (body_push2 <= (elH * -1)) body_push2 = elH * -1;
-                 
+                 if (body_push2 <= (elHbottom * -1)) body_push2 = elHbottom * -1;
+                console.log(body_push2) 
                 $(".epn-nextpage:not(.epn-top)").css({
-                  "bottom": (elH * -1)
+                  "bottom": (elHbottom * -1)
                 });
                 container.find(".epn-wrapper").css({
                   "-webkit-transform": "translate3d(0, " + body_push2  + "px, 0)", 
@@ -175,6 +208,7 @@
                 
 
              } else {
+               
                $(".epn-nextpage:not(.epn-top)").css({
                  "bottom": bottom
                });
@@ -228,13 +262,13 @@
       
       interval = setInterval(function() {
 
-          width += 100 / (settings.waitTime/1000);
-          progressBar.css('width', width + '%');
-          
-          if (width >= 100) {
-              clearInterval(interval);
-              window.location.href = url;
-          }
+        width += 100 / (settings.waitTime/1000);
+        progressBar.css('width', width + '%');
+        
+        if (width >= 100) {
+            clearInterval(interval);
+            window.location.href = url;
+        }
       }, 1000);
     }
     
@@ -244,7 +278,6 @@
       $(selector + " .epn-progresswrapper").remove();
       clearInterval(interval);
     }
-  
   }
   
   

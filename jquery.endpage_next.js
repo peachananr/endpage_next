@@ -43,6 +43,12 @@
     $("<div class='epn-nextpage'>" + settings.bottomHTML +"</div>").appendTo(container.find(".epn-wrapper"));
 
     if (settings.position == "both") $("<div class='epn-nextpage epn-top'>" + settings.topHTML +"</div>").appendTo(container.find(".epn-wrapper"))
+    
+    if (settings.position == "top") {
+      $(".epn-nextpage").addClass("epn-top")
+      $(".epn-nextpage").html(settings.topHTML);
+    }
+    
     var elHtop = $(".epn-nextpage.epn-top").outerHeight(true);
     var elHbottom = $(".epn-nextpage:not(.epn-top)").outerHeight(true);
     
@@ -63,10 +69,7 @@
       window.location.href = settings.bottomUrl;
     });
     
-    if (settings.position == "top") {
-      $(".epn-nextpage").addClass("epn-top")
-      $(".epn-nextpage").html(settings.topHTML);
-    }
+    
     
     $(window).on('scroll touchmove', function(event) {
       
@@ -103,7 +106,6 @@
               }
             } else {
               if ((pos + $(window).height()) - (container.height() + 1) == 0) bottom = 0
-              console.log(container.height())
               $(".epn-nextpage:not(.epn-top)").css({
                 "bottom": bottom
               });
@@ -194,7 +196,6 @@
                if (settings.position == "bottom" || settings.position == "both") {
                  var body_push2 = (diff_bottom * settings.speed) * -1;
                  if (body_push2 <= (elHbottom * -1)) body_push2 = elHbottom * -1;
-                console.log(body_push2) 
                 $(".epn-nextpage:not(.epn-top)").css({
                   "bottom": (elHbottom * -1)
                 });

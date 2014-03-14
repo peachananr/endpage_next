@@ -11,7 +11,7 @@ License: [Attribution-ShareAlike 4.0 International](http://creativecommons.org/l
 [View demo](http://www.thepetedesign.com/demos/endpage_next_demo.html)
 
 ## Compatibility
-Modern browsers such as Chrome, Firefox, and Safari on both desktop and smartphones have been tested. I have not tested this on IE.
+Browsers with elastic scrolling such as Mac's Chrome, and Mac's Safari are fully supported. All other modern browsers have partial supports but main functionalities still work nontheless. I have not tested this on IE.
 
 ## Basic Usage
 

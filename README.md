@@ -4,11 +4,10 @@ Created by [Pete R.](http://www.thepetedesign.com), Founder of [BucketListly](ht
 
 License: [Attribution-ShareAlike 4.0 International](http://creativecommons.org/licenses/by-sa/4.0/deed.en_US)
 
-[![End Page Next](http://www.thepetedesign.com/images/endpage_next_image.png "End Page Next")](http://www.thepetedesign.com/demos/endpage_next_demo.html)
 
 
 ## Demo
-[View demo](http://www.thepetedesign.com/demos/endpage_next_demo.html)
+[View demo](http://peachananr.github.io/endpage_next/demo/endpage_next_demo.html)
 
 ## Compatibility
 Browsers with elastic scrolling such as Mac's Chrome, and Mac's Safari are fully supported. All other modern browsers have partial supports but main functionalities still work nontheless. I have not tested this on IE.
